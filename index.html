@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>Voxel Building Tool</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 100%; height: 100%; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; background: #1a1a1a; color: #e0e0e0; }
+      #app { display: flex; flex-direction: column; width: 100%; height: 100%; }
+      #toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #232323; border-bottom: 1px solid #333; flex-wrap: wrap; }
+      #toolbar .group { display: flex; align-items: center; gap: 6px; padding-right: 12px; border-right: 1px solid #333; }
+      #toolbar .group:last-child { border-right: none; }
+      #toolbar label { font-size: 12px; color: #999; }
+      button { background: #2e2e2e; color: #e0e0e0; border: 1px solid #444; border-radius: 4px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
+      button:hover { background: #3a3a3a; }
+      button:disabled { opacity: 0.4; cursor: default; }
+      button.active { background: #3b6ea5; border-color: #4a85c0; }
+      #main { display: flex; flex: 1; min-height: 0; }
+      #palette { width: 190px; background: #232323; border-right: 1px solid #333; overflow-y: auto; padding: 8px; }
+      #palette h3 { font-size: 12px; color: #999; margin: 4px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .shape-item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; }
+      .shape-item:hover { background: #2e2e2e; }
+      .shape-item.active { background: #3b6ea5; border-color: #4a85c0; }
+      .shape-item .preview { width: 42px; height: 42px; border-radius: 4px; border: 1px solid #3a3a3a; background: #161616; object-fit: contain; flex-shrink: 0; }
+      .shape-item .name { font-size: 13px; }
+      .group-hint { font-size: 11px; color: #777; line-height: 1.4; padding: 4px 6px; font-style: italic; }
+      #viewport { flex: 1; position: relative; min-width: 0; }
+      #viewport canvas { display: block; }
+      #hud { position: absolute; top: 8px; left: 8px; font-size: 11px; color: #aaa; background: rgba(0,0,0,0.5); padding: 6px 8px; border-radius: 4px; pointer-events: none; line-height: 1.5; }
+      #groups-panel { width: 200px; background: #232323; border-left: 1px solid #333; overflow-y: auto; padding: 8px; display: none; }
+      #groups-panel.visible { display: block; }
+      #groups-panel h3 { font-size: 12px; color: #999; margin: 4px 0 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .group-item { padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 4px; border: 1px solid transparent; font-size: 13px; }
+      .group-item:hover { background: #2e2e2e; }
+      .group-item.active { background: #5a4a7a; border-color: #7a6a9a; }
+      #toast { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 8px 14px; border-radius: 4px; font-size: 12px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+      #toast.show { opacity: 1; }
+    </style>
+    <script type="module" crossorigin src="./assets/index-DdlAdqvr.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div id="toolbar">
+        <div class="group">
+          <button id="btn-undo" title="Undo (Strg+Z)">↶ Undo</button>
+          <button id="btn-redo" title="Redo (Strg+Shift+Z)">↷ Redo</button>
+        </div>
+        <div class="group">
+          <button id="btn-reset" title="Position neutral setzen">⟲ Reset</button>
+          <button id="btn-delete" title="Auswahl entfernen (Entf)">🗑 Löschen</button>
+          <button id="btn-clear" title="Alles löschen">✕ Alles</button>
+        </div>
+        <div class="group">
+          <button id="btn-groups" title="Aus gewählten Blöcken eine Baugruppe machen">⧉ Gruppe</button>
+        </div>
+        <div class="group">
+          <label>Form:</label>
+          <span id="active-shape-name" style="font-size:13px;">—</span>
+        </div>
+        <div class="group">
+          <label>Drehung:</label>
+          <span id="rot-info" style="font-size:13px;">0°</span>
+        </div>
+      </div>
+      <div id="main">
+        <div id="palette">
+          <h3>Formen</h3>
+          <div id="shape-list"></div>
+          <h3 style="margin-top:16px;">Baugruppen</h3>
+          <div id="group-list"></div>
+        </div>
+        <div id="viewport">
+          <div id="hud"></div>
+          <div id="toast"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
